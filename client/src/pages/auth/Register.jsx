@@ -28,7 +28,8 @@ export default function Register() {
         else if (user.role === "agent") navigate("/agent/dashboard");
         else if (user.role === "recruiter") navigate("/recruiter/dashboard");
     } catch (err) {
-        setError(err.message);
+        console.error("Registration Error:", err);
+        setError(err.toString());
     } finally {
         setLoading(false);
     }
@@ -81,6 +82,25 @@ export default function Register() {
                     <option value="recruiter">Recruiter</option>
                  </select>
               </div>
+
+            {formData.role === 'recruiter' && (
+                <Input
+                    label="Company Name"
+                    placeholder="Acme Corp"
+                    value={formData.company || ""}
+                    onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                    required
+                />
+            )}
+
+            {formData.role === 'agent' && (
+                <Input
+                    label="Skills (comma separated)"
+                    placeholder="React, Node.js, Design"
+                    value={formData.skills || ""}
+                    onChange={(e) => setFormData({ ...formData, skills: e.target.value.split(',').map(s => s.trim()) })}
+                />
+            )}
             </div>
 
             {error && (

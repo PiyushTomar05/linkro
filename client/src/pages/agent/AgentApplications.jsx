@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
-import { getApplications } from "../../services/mockService";
+import { getMyApplications } from "../../api/agent";
 import { AuthContext } from "../../context/AuthContext";
 import Button from "../../components/ui/Button";
 
@@ -15,7 +15,7 @@ export default function AgentApplications() {
 
   const loadApps = async () => {
     try {
-        const data = await getApplications({ applicantId: user.id });
+        const data = await getMyApplications();
         setApplications(data);
     } catch (err) {
         console.error(err);
@@ -52,15 +52,18 @@ export default function AgentApplications() {
                 <tbody className="text-sm">
                 {applications.map((app) => (
                     <tr key={app.id} className="border-b border-slate-50 last:border-0 hover:bg-slate-50/50">
-                    <td className="p-4 font-medium text-slate-900">{app.jobTitle}</td>
-                    <td className="p-4 text-slate-600">{app.company}</td>
-                    <td className="p-4 text-slate-600">{app.appliedAt}</td>
+                    <td className="p-4 font-medium text-slate-900">{app.job?.title || "Unknown Job"}</td>
+                    <td className="p-4 text-slate-600">{app.job?.company?.name || app.job?.company || "Unknown Company"}</td>
+                    <td className="p-4 text-slate-600">{new Date(app.appliedAt).toLocaleDateString()}</td>
                     <td className="p-4">
-                         <span className={`px-2.5 py-1 rounded-full text-xs font-medium capitalize
-                            ${app.status === 'pending' ? 'bg-yellow-50 text-yellow-600' : 
-                              app.status === 'interview' ? 'bg-indigo-50 text-indigo-600' : 'bg-green-50 text-green-600'}`}>
-                            {app.status}
+                        <span className={`px-2.5 py-1 rounded-full text-xs font-medium capitalize
+                        ${app.status === 'pending' ? 'bg-yellow-50 text-yellow-600' : 
+                          app.status === 'accepted' ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'}`}>
+                        {app.status}
                         </span>
+                    </td>
+                    <td className="p-4 text-right">
+                        {/* <Button variant="secondary" className="px-3 py-1.5 h-auto text-xs">View</Button> */}
                     </td>
                     </tr>
                 ))}

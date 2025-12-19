@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Button from "../../components/ui/Button";
-import { getJobs } from "../../services/mockService";
+import { getJobs } from "../../api/admin";
 
 export default function ManageJobs() {
   const [jobs, setJobs] = useState([]);
@@ -43,24 +43,24 @@ export default function ManageJobs() {
               </tr>
             </thead>
             <tbody className="text-sm">
-              {jobs.map((job) => (
-                <tr key={job.id} className="border-b border-slate-50 last:border-0 hover:bg-slate-50/50">
-                  <td className="p-4 font-medium text-slate-900">{job.title}</td>
-                  <td className="p-4 text-slate-600">{job.company}</td>
-                  <td className="p-4 text-slate-600">{job.location}</td>
-                  <td className="p-4">
-                     <span className={`px-2.5 py-1 rounded-full text-xs font-medium capitalize
-                      ${job.status === 'active' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-600'}`}>
-                      {job.status}
-                    </span>
-                  </td>
-                  <td className="p-4 text-right space-x-2">
-                    <Link to={`/admin/jobs/${job.id}`}>
-                        <Button variant="secondary" className="px-3 py-1.5 h-auto text-xs">View</Button>
-                    </Link>
-                  </td>
-                </tr>
-              ))}
+                {jobs.map((job) => (
+                    <tr key={job.id} className="border-b border-slate-50 last:border-0 hover:bg-slate-50/50">
+                    <td className="p-4 font-medium text-slate-900">{job.title}</td>
+                    <td className="p-4 text-slate-600">{job.company?.name || job.company}</td>
+                    <td className="p-4 text-slate-600">{job.location}</td>
+                    <td className="p-4">
+                        <span className={`px-2.5 py-1 rounded-full text-xs font-medium capitalize
+                        ${job.status === 'active' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-600'}`}>
+                        {job.status}
+                        </span>
+                    </td>
+                    <td className="p-4 text-right space-x-2">
+                        <Link to={`/admin/jobs/${job.id}`}>
+                            <Button variant="secondary" className="px-3 py-1.5 h-auto text-xs">View</Button>
+                        </Link>
+                    </td>
+                    </tr>
+                ))}
             </tbody>
           </table>
         </div>

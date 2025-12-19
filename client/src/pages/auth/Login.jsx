@@ -23,7 +23,8 @@ export default function Login() {
       else if (user.role === "agent") navigate("/agent/dashboard");
       else if (user.role === "recruiter") navigate("/recruiter/dashboard");
     } catch (err) {
-      setError(err.message);
+      console.error("Login failed:", err);
+      setError(err.toString());
     } finally {
       setLoading(false);
     }

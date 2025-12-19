@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { getJobById, applyForJob, getApplications } from "../../services/mockService";
+import { getJobDetails, applyForJob, getMyApplications } from "../../api/agent";
 import { AuthContext } from "../../context/AuthContext";
 import Button from "../../components/ui/Button";
 
@@ -20,12 +20,14 @@ export default function AgentJobDetails() {
 
   const loadData = async () => {
      try {
-         const jobData = await getJobById(id);
+         const jobData = await getJobDetails(id);
          setJob(jobData);
          
          if (user) {
-             const apps = await getApplications({ applicantId: user.id });
-             const applied = apps.some(a => a.jobId === id);
+             const apps = await getMyApplications();
+             // Check if any application matches this job ID.
+             // Note: backend might populate jobId, so check both id string and object._id
+             const applied = apps.some(a => (a.jobId?._id === id || a.jobId === id));
              setHasApplied(applied);
          }
      } catch (err) {
@@ -42,7 +44,7 @@ export default function AgentJobDetails() {
     }
     setApplying(true);
     try {
-        await applyForJob(id, user.id);
+        await applyForJob(id);
         setHasApplied(true);
     } catch (err) {
         console.error("Failed to apply", err);

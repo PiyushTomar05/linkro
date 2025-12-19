@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Button from "../../components/ui/Button";
-import { getUsers } from "../../services/mockService";
+import { getUsers, deleteUser } from "../../api/admin";
 
 export default function ManageUsers() {
   const [users, setUsers] = useState([]);
@@ -22,10 +22,15 @@ export default function ManageUsers() {
     }
   };
 
-  const handleDelete = (id) => {
-    // Mock delete - in real app would call API
+  const handleDelete = async (id) => {
     if(confirm("Are you sure you want to delete this user?")) {
-        setUsers(users.filter((u) => u.id !== id));
+        try {
+            await deleteUser(id);
+            setUsers(users.filter((u) => u._id !== id));
+        } catch (err) {
+            console.error("Failed to delete user", err);
+            alert("Failed to delete user");
+        }
     }
   };
 

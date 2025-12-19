@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import Button from "../../components/ui/Button";
-import { getJobs } from "../../services/mockService";
+import { getMyJobs } from "../../api/recruiter";
 import { AuthContext } from "../../context/AuthContext";
 
 export default function RecruiterJobs() {
@@ -17,7 +17,7 @@ export default function RecruiterJobs() {
 
   const loadJobs = async () => {
     try {
-        const data = await getJobs({ recruiterId: user.id });
+        const data = await getMyJobs();
         setJobs(data);
     } catch (err) {
         console.error(err);

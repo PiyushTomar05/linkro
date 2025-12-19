@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { getJobById } from "../../services/mockService";
+import { getJobDetails } from "../../api/admin";
 import Button from "../../components/ui/Button";
 
 export default function ManageJobDetails() {
@@ -12,7 +12,7 @@ export default function ManageJobDetails() {
   useEffect(() => {
     const loadJob = async () => {
         try {
-            const data = await getJobById(id);
+            const data = await getJobDetails(id);
             setJob(data);
         } catch (err) {
             setError(err.message);

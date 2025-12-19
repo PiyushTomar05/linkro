@@ -11,6 +11,8 @@ const generateToken = (id) => {
 // @access  Public
 exports.register = async (req, res) => {
     const { name, email, password, role, company, skills } = req.body;
+    console.log("Register Request:", req.body);
+
 
     try {
         const userExists = await User.findOne({ email });

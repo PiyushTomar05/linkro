@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
-import { getApplications } from "../../services/mockService";
+import { getJobApplications } from "../../api/recruiter";
 import { AuthContext } from "../../context/AuthContext";
 import Button from "../../components/ui/Button";
 
@@ -15,7 +15,7 @@ export default function RecruiterApplications() {
 
   const loadApps = async () => {
     try {
-        const data = await getApplications({ recruiterId: user.id });
+        const data = await getJobApplications();
         setApplications(data);
     } catch (err) {
         console.error(err);
@@ -48,20 +48,18 @@ export default function RecruiterApplications() {
                 <tbody className="text-sm">
                 {applications.map((app) => (
                     <tr key={app.id} className="border-b border-slate-50 last:border-0 hover:bg-slate-50/50">
+                    <td className="p-4 font-medium text-slate-900">{app.jobTitle || "Unknown Job"}</td>
+                    <td className="p-4 text-slate-600">{app.applicantName || "Unknown Applicant"}</td>
+                    <td className="p-4 text-slate-500">{new Date(app.appliedAt).toLocaleDateString()}</td>
                     <td className="p-4">
-                        <div className="font-medium text-slate-900">{app.applicantName}</div>
-                        <div className="text-xs text-slate-500">{app.applicantEmail}</div>
-                    </td>
-                    <td className="p-4 font-medium text-indigo-600">{app.jobTitle}</td>
-                    <td className="p-4 text-slate-600">{app.appliedAt}</td>
-                    <td className="p-4">
-                         <span className={`px-2.5 py-1 rounded-full text-xs font-medium capitalize
-                            ${app.status === 'pending' ? 'bg-yellow-50 text-yellow-600' : 'bg-emerald-50 text-emerald-600'}`}>
-                            {app.status}
+                        <span className={`px-2.5 py-1 rounded-full text-xs font-medium capitalize
+                        ${app.status === 'pending' ? 'bg-yellow-50 text-yellow-600' : 
+                          app.status === 'accepted' ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'}`}>
+                        {app.status}
                         </span>
                     </td>
                     <td className="p-4 text-right">
-                        <Link to={`/recruiter/candidates/${app.id}`}>
+                        <Link to={`/recruiter/applications/${app.id}`}>
                             <Button variant="secondary" className="px-3 py-1.5 h-auto text-xs">View Details</Button>
                         </Link>
                     </td>

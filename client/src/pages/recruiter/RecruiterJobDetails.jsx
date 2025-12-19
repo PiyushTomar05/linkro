@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { getJobById, getApplications } from "../../services/mockService";
+import { getJobDetails, getJobApplications } from "../../api/recruiter";
 import Button from "../../components/ui/Button";
 
 export default function RecruiterJobDetails() {
@@ -13,14 +13,12 @@ export default function RecruiterJobDetails() {
     const loadData = async () => {
         try {
             const [jobData, appsData] = await Promise.all([
-                getJobById(id),
-                getApplications({ recruiterId: "CURRENT_USER_ID_PLACEHOLDER" }) // Optimization for real app: filter by jobId
+                getJobDetails(id),
+                getJobApplications({ jobId: id })
             ]);
-            // Filter apps for this job specifically (since getApplications mock filters by recruiter only optionally)
-            // Wait, I should make getApplications support jobId.
-            // But for now, filtering works.
+            
             setJob(jobData);
-            setCandidates(appsData.filter(app => app.jobId === id));
+            setCandidates(appsData);
         } catch (err) {
             console.error(err);
         } finally {
@@ -89,10 +87,10 @@ export default function RecruiterJobDetails() {
                     {candidates.map((app) => (
                         <tr key={app.id} className="border-b border-slate-50 last:border-0 hover:bg-slate-50/50">
                         <td className="p-4">
-                            <div className="font-medium text-slate-900">{app.applicantName}</div>
-                            <div className="text-xs text-slate-500">{app.applicantEmail}</div>
+                            <div className="font-medium text-slate-900">{app.applicantName || "Unknown"}</div>
+                            <div className="text-xs text-slate-500">{app.applicantEmail || "No email"}</div>
                         </td>
-                        <td className="p-4 text-slate-600">{app.appliedAt}</td>
+                        <td className="p-4 text-slate-600">{new Date(app.appliedAt).toLocaleDateString()}</td>
                         <td className="p-4">
                             <span className={`px-2.5 py-1 rounded-full text-xs font-medium capitalize
                             ${app.status === 'pending' ? 'bg-yellow-50 text-yellow-600' : 'bg-emerald-50 text-emerald-600'}`}>
@@ -100,7 +98,7 @@ export default function RecruiterJobDetails() {
                             </span>
                         </td>
                         <td className="p-4 text-right">
-                             <Link to={`/recruiter/candidates/${app.id}`}>
+                             <Link to={`/recruiter/applications/${app.id}`}>
                                 <Button variant="secondary" className="px-3 py-1.5 h-auto text-xs">View Application</Button>
                             </Link>
                         </td>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { getUserById } from "../../services/mockService";
+import { getUserById } from "../../api/admin";
 import Button from "../../components/ui/Button";
 
 export default function ManageUserDetails() {

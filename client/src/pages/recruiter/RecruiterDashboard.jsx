@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import StatCard from "../../components/ui/StatCard";
 import Button from "../../components/ui/Button";
 import { UsersIcon, BriefcaseIcon, ClockIcon } from "@heroicons/react/24/outline";
-import { getJobs, getApplications } from "../../services/mockService";
+import { getMyJobs, getJobApplications } from "../../api/recruiter";
 import { AuthContext } from "../../context/AuthContext";
 
 export default function RecruiterDashboard() {
@@ -25,8 +25,8 @@ export default function RecruiterDashboard() {
   const loadData = async () => {
     try {
         const [jobs, apps] = await Promise.all([
-            getJobs({ recruiterId: user.id }),
-            getApplications({ recruiterId: user.id })
+            getMyJobs(),
+            getJobApplications()
         ]);
 
         setStats({

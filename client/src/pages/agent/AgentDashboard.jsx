@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import StatCard from "../../components/ui/StatCard";
 import Button from "../../components/ui/Button";
 import { BriefcaseIcon, CheckCircleIcon, ClockIcon } from "@heroicons/react/24/outline";
-import { getApplications } from "../../services/mockService";
+import { getMyApplications } from "../../api/agent";
 import { AuthContext } from "../../context/AuthContext";
 
 export default function AgentDashboard() {
@@ -24,7 +24,7 @@ export default function AgentDashboard() {
 
   const loadData = async () => {
     try {
-        const apps = await getApplications({ applicantId: user.id });
+        const apps = await getMyApplications();
         setStats({
             applied: apps.length,
             interviews: apps.filter(a => a.status === 'interview').length,
@@ -89,13 +89,13 @@ export default function AgentDashboard() {
                                     {app.company?.charAt(0) || 'C'}
                                 </div>
                                 <div>
-                                    <h4 className="font-medium text-slate-900">{app.jobTitle}</h4>
-                                    <p className="text-xs text-slate-500">{app.company} • {app.appliedAt}</p>
+                                    <h4 className="font-medium text-slate-900">{app.jobTitle || "Unknown Job"}</h4>
+                                    <p className="text-xs text-slate-500">{app.company || "Unknown Company"} • {new Date(app.appliedAt).toLocaleDateString()}</p>
                                 </div>
                             </div>
                             <span className={`px-2 py-0.5 rounded text-xs font-medium capitalize 
                                 ${app.status === 'pending' ? 'bg-yellow-50 text-yellow-600' : 
-                                  app.status === 'interview' ? 'bg-indigo-50 text-indigo-600' : 'bg-green-50 text-green-600'}`}>
+                                  app.status === 'accepted' ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'}`}>
                                 {app.status}
                             </span>
                         </div>

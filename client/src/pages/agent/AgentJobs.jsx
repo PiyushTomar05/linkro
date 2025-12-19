@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Button from "../../components/ui/Button";
 import Input from "../../components/ui/Input";
-import { getJobs } from "../../services/mockService";
+import { searchJobs } from "../../api/agent";
+import { MapPinIcon, CurrencyRupeeIcon, ClockIcon } from "@heroicons/react/24/outline";
 
 export default function AgentJobs() {
   const [jobs, setJobs] = useState([]);
@@ -29,9 +30,9 @@ export default function AgentJobs() {
 
   const loadJobs = async () => {
     try {
-        const data = await getJobs(); 
+        const data = await searchJobs(search); 
         // Showing all jobs to agent
-        setJobs(data.filter(j => j.status === 'active'));
+        setJobs(data);
     } catch (err) {
         console.error(err);
     } finally {
@@ -62,21 +63,35 @@ export default function AgentJobs() {
         {filteredJobs.length === 0 ? (
             <div className="text-center p-8 text-slate-500">No jobs found matching your search.</div>
         ) : (
-            filteredJobs.map((job) => (
-                <div key={job.id} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:border-indigo-100 transition-all flex flex-col md:flex-row justify-between md:items-center gap-4">
-                    <div>
-                        <h3 className="text-lg font-bold text-slate-900">{job.title}</h3>
-                        <p className="text-indigo-600 font-medium">{job.company}</p>
-                        <div className="flex flex-wrap gap-3 mt-2 text-sm text-slate-500">
-                            <span>{job.location}</span>
-                            <span>•</span>
-                            <span>{job.type}</span>
-                            <span>•</span>
-                            <span>{job.salary}</span>
+            filteredJobs.map((job) => ( // Kept filteredJobs.map for search functionality
+                <div key={job.id} className="bg-white p-6 rounded-xl border border-slate-100 hover:shadow-md transition-shadow">
+                    <div className="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 className="font-bold text-lg text-slate-900 mb-1">{job.title}</h3>
+                            <p className="text-slate-500 text-sm">{job.company?.name || job.company}</p>
+                        </div>
+                        <span className="bg-emerald-50 text-emerald-600 text-xs px-2.5 py-1 rounded-full font-medium">
+                            {job.type}
+                        </span>
+                    </div>
+                    
+                    <div className="space-y-2 mb-6">
+                        <div className="flex items-center text-slate-500 text-sm">
+                            <MapPinIcon className="w-4 h-4 mr-2" />
+                            {job.location}
+                        </div>
+                        <div className="flex items-center text-slate-500 text-sm">
+                            <CurrencyRupeeIcon className="w-4 h-4 mr-2" />
+                            {job.salary}
+                        </div>
+                        <div className="flex items-center text-slate-500 text-sm">
+                            <ClockIcon className="w-4 h-4 mr-2" />
+                            {new Date(job.posted).toLocaleDateString()}
                         </div>
                     </div>
-                    <Link to={`/agent/jobs/${job.id}`}>
-                        <Button>View Details</Button>
+
+                    <Link to={`/agent/jobs/${job.id}`} className="block">
+                        <Button className="w-full">View Details</Button>
                     </Link>
                 </div>
             ))

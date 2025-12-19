@@ -2,7 +2,7 @@ import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/ui/Button";
 import Input from "../../components/ui/Input";
-import { createJob } from "../../services/mockService";
+import { postJob } from "../../api/recruiter";
 import { AuthContext } from "../../context/AuthContext";
 
 export default function RecruiterCreateJob() {
@@ -22,10 +22,9 @@ export default function RecruiterCreateJob() {
     setLoading(true);
 
     try {
-        await createJob({
+        await postJob({
             ...formData,
             company: user.company || "My Company", // Default if not in user profile
-            recruiterId: user.id
         });
         navigate("/recruiter/jobs");
     } catch (err) {

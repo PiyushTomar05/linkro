@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { getApplications } from "../../services/mockService"; // Optimize: should implement getApplicationById
+import { getJobApplications } from "../../api/recruiter";
 import Button from "../../components/ui/Button";
 
 export default function RecruiterApplicationDetails() {
@@ -11,10 +11,16 @@ export default function RecruiterApplicationDetails() {
   useEffect(() => {
     // Mock get by ID by filtering all
     const loadApp = async () => {
-        const apps = await getApplications();
-        const found = apps.find(a => a.id === id);
-        setApp(found);
-        setLoading(false);
+        try {
+            const apps = await getJobApplications();
+            // Check both _id (MongoDB) and id (virtual/mock)
+            const found = apps.find(a => a._id === id || a.id === id);
+            setApp(found);
+            setLoading(false);
+        } catch (err) {
+            console.error(err);
+            setLoading(false);
+        }
     };
     loadApp();
   }, [id]);

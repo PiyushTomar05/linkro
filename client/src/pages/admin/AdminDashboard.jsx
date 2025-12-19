@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import StatCard from "../../components/ui/StatCard";
 import Button from "../../components/ui/Button";
 import { UsersIcon, BriefcaseIcon, CurrencyRupeeIcon, ComputerDesktopIcon } from "@heroicons/react/24/outline";
-import { getSystemStats, getSystemLogs } from "../../services/mockService";
+import { getSystemStats, getSystemLogs } from "../../api/admin";
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
