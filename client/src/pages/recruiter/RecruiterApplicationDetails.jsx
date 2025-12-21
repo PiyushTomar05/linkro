@@ -81,6 +81,21 @@ export default function RecruiterApplicationDetails() {
                             </div>
                         )}
                     </div>
+                    
+                    <div className="space-y-4 mt-8">
+                        <h4 className="font-semibold text-slate-900">Skills</h4>
+                        <div className="flex flex-wrap gap-2">
+                            {app.skills && app.skills.length > 0 ? (
+                                app.skills.map((skill, index) => (
+                                    <span key={index} className="px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-sm font-medium">
+                                        {skill}
+                                    </span>
+                                ))
+                            ) : (
+                                <span className="text-slate-500 text-sm">No skills listed</span>
+                            )}
+                        </div>
+                    </div>
                 </div>
           </div>
 

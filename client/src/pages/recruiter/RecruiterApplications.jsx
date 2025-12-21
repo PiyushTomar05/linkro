@@ -54,7 +54,7 @@ export default function RecruiterApplications() {
                     <td className="p-4">
                         <span className={`px-2.5 py-1 rounded-full text-xs font-medium capitalize
                         ${app.status === 'pending' ? 'bg-yellow-50 text-yellow-600' : 
-                          app.status === 'accepted' ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'}`}>
+                          (app.status === 'accepted' || app.status === 'hired') ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'}`}>
                         {app.status}
                         </span>
                     </td>
