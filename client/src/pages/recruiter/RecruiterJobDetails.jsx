@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { getJobDetails, getJobApplications, updateJobStatus } from "../../api/recruiter";
+import { formatDate } from "../../utils/formatDate";
 import Button from "../../components/ui/Button";
 
 export default function RecruiterJobDetails() {
@@ -64,7 +65,7 @@ export default function RecruiterJobDetails() {
                 <span>•</span>
                 <span>{job.salary}</span>
                 <span>•</span>
-                <span>Posted on {job.posted}</span>
+                <span>Posted on {formatDate(job.posted)}</span>
             </div>
          </div>
          <div className="flex gap-2">
@@ -111,12 +112,18 @@ export default function RecruiterJobDetails() {
                             <div className="text-xs text-slate-500">{app.applicantEmail || "No email"}</div>
                         </td>
                         <td className="p-4 text-slate-600">{new Date(app.appliedAt).toLocaleDateString()}</td>
-                        <td className="p-4">
-                            <span className={`px-2.5 py-1 rounded-full text-xs font-medium capitalize
-                            ${app.status === 'pending' ? 'bg-yellow-50 text-yellow-600' : 'bg-emerald-50 text-emerald-600'}`}>
-                            {app.status}
-                            </span>
-                        </td>
+                            <td className="p-4">
+                                <span className={`px-2.5 py-1 rounded-full text-xs font-medium capitalize
+                                ${
+                                    app.status === 'hired' ? 'bg-green-50 text-green-600' :
+                                    app.status === 'rejected' ? 'bg-red-50 text-red-600' :
+                                    app.status === 'interview' ? 'bg-blue-50 text-blue-600' :
+                                    app.status === 'pending' ? 'bg-yellow-50 text-yellow-600' :
+                                    'bg-slate-100 text-slate-600'
+                                }`}>
+                                {app.status}
+                                </span>
+                            </td>
                         <td className="p-4 text-right">
                              <Link to={`/recruiter/candidates/${app.id}`}>
                                 <Button variant="secondary" className="px-3 py-1.5 h-auto text-xs">View Application</Button>

@@ -86,7 +86,7 @@ exports.getJobApplications = async (req, res) => {
 // @route   PATCH /api/recruiter/applications/:id/status
 exports.updateApplicationStatus = async (req, res) => {
     try {
-        const { status } = req.body;
+        const { status, note } = req.body;
         const { id } = req.params;
 
         // Find application and populate job to check ownership
@@ -102,9 +102,67 @@ exports.updateApplicationStatus = async (req, res) => {
         }
 
         application.status = status;
+        application.lastStatusUpdatedAt = new Date();
+
+        // Initialize timeline if it doesn't exist (for old records)
+        if (!application.timeline) {
+            application.timeline = [];
+        }
+
+        // Add to timeline
+        application.timeline.push({
+            status,
+            note: note || '',
+            updatedBy: req.user._id,
+            updatedAt: new Date()
+        });
+
         await application.save();
 
         res.json(application);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc    Get single application details for recruiter (marks as viewed)
+// @route   GET /api/recruiter/applications/:id
+exports.getApplicationDetails = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Find application
+        const application = await Application.findById(id)
+            .populate('jobId', 'title company recruiterId')
+            .populate('applicantId', 'name email skills resume');
+
+        if (!application) {
+            return res.status(404).json({ message: 'Application not found' });
+        }
+
+        // Verify ownership
+        if (application.jobId.recruiterId.toString() !== req.user._id.toString()) {
+            return res.status(403).json({ message: 'Unauthorized' });
+        }
+
+        // Mark as viewed
+        application.lastViewedByRecruiterAt = new Date();
+        await application.save();
+
+        const transformed = {
+            ...application.toJSON(),
+            jobTitle: application.jobId?.title,
+            company: application.jobId?.company,
+            applicantName: application.applicantId?.name,
+            applicantEmail: application.applicantId?.email,
+            skills: application.applicantId?.skills,
+            resume: application.applicantId?.resume,
+            // Explicitly include our new fields if transform removes them (it shouldn't based on schema options but good to be safe)
+            lastViewedByRecruiterAt: application.lastViewedByRecruiterAt,
+            lastStatusUpdatedAt: application.lastStatusUpdatedAt
+        };
+
+        res.json(transformed);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

@@ -4,6 +4,7 @@ import StatCard from "../../components/ui/StatCard";
 import Button from "../../components/ui/Button";
 import { UsersIcon, BriefcaseIcon, ClockIcon } from "@heroicons/react/24/outline";
 import { getMyJobs, getJobApplications } from "../../api/recruiter";
+import { formatDate } from "../../utils/formatDate";
 import { AuthContext } from "../../context/AuthContext";
 
 export default function RecruiterDashboard() {
@@ -93,7 +94,7 @@ export default function RecruiterDashboard() {
                     </div>
                     <div>
                     <h3 className="font-medium text-slate-900">{app.jobTitle}</h3>
-                    <p className="text-sm text-slate-500">Applied by {app.applicantName} • {new Date(app.appliedAt).toLocaleDateString()}</p>
+                    <p className="text-sm text-slate-500">Applied by {app.applicantName} • {formatDate(app.appliedAt)}</p>
                     </div>
                 </div>
                 <div className="flex gap-2">

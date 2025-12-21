@@ -4,6 +4,7 @@ import StatCard from "../../components/ui/StatCard";
 import Button from "../../components/ui/Button";
 import { BriefcaseIcon, CheckCircleIcon, ClockIcon, ArrowLongRightIcon } from "@heroicons/react/24/outline";
 import { getMyApplications } from "../../api/agent";
+import { formatDate } from "../../utils/formatDate";
 import { AuthContext } from "../../context/AuthContext";
 
 export default function AgentDashboard() {
@@ -128,7 +129,7 @@ export default function AgentDashboard() {
                                     {app.status}
                                 </span>
                                 <p className="text-xs text-slate-400 mt-1.5 font-medium">
-                                    {new Date(app.appliedAt).toLocaleDateString()}
+                                    {formatDate(app.appliedAt)}
                                 </p>
                             </div>
                         </div>

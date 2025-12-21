@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { getJobDetails } from "../../api/admin";
+import { formatDate } from "../../utils/formatDate";
 import Button from "../../components/ui/Button";
 
 export default function ManageJobDetails() {
@@ -70,7 +71,7 @@ export default function ManageJobDetails() {
                 </div>
                  <div>
                      <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Posted On</label>
-                     <p className="text-slate-900 font-medium">{job.posted}</p>
+                     <p className="text-slate-900 font-medium">{formatDate(job.posted)}</p>
                 </div>
             </div>
         </div>

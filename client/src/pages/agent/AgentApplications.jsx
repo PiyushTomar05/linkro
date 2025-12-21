@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getMyApplications } from "../../api/agent";
+import { formatDate } from "../../utils/formatDate";
 import { AuthContext } from "../../context/AuthContext";
 import Button from "../../components/ui/Button";
 
@@ -52,10 +53,10 @@ export default function AgentApplications() {
                 </thead>
                 <tbody className="text-sm">
                 {applications.map((app) => (
-                    <tr key={app.id} onClick={() => app.jobId?.id && navigate(`/agent/jobs/${app.jobId.id}`)} className="border-b border-slate-50 last:border-0 hover:bg-slate-50/50 cursor-pointer">
+                    <tr key={app.id} onClick={() => navigate(`/agent/applications/${app.id}`)} className="border-b border-slate-50 last:border-0 hover:bg-slate-50/50 cursor-pointer">
                     <td className="p-4 font-medium text-slate-900">{app.jobTitle || "Unknown Job"}</td>
                     <td className="p-4 text-slate-600">{app.company || "Unknown Company"}</td>
-                    <td className="p-4 text-slate-600">{new Date(app.appliedAt).toLocaleDateString()}</td>
+                    <td className="p-4 text-slate-600">{formatDate(app.appliedAt)}</td>
                     <td className="p-4">
                         <span className={`px-2.5 py-1 rounded-full text-xs font-medium capitalize
                         ${app.status === 'pending' ? 'bg-yellow-50 text-yellow-600' : 

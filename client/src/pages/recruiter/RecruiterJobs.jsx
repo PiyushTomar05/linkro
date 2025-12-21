@@ -70,8 +70,11 @@ export default function RecruiterJobs() {
                         </span>
                     </td>
                     <td className="p-4 text-right space-x-2">
-                        <Link to={`/recruiter/jobs/${job.id}`}>
-                            <Button variant="secondary" className="px-3 py-1.5 h-auto text-xs">View & Managing</Button>
+                        <Link 
+                            to={`/recruiter/jobs/${job.id}`}
+                            className="inline-flex items-center justify-center font-medium transition-all duration-200 focus:outline-none disabled:opacity-70 disabled:cursor-not-allowed active:scale-[0.98] bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 hover:border-slate-300 shadow-sm rounded-xl px-3 py-1.5 h-auto text-xs"
+                        >
+                            View & Managing
                         </Link>
                     </td>
                     </tr>

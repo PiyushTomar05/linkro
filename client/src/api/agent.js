@@ -36,6 +36,15 @@ export const getMyApplications = async () => {
     }
 };
 
+export const getApplicationDetails = async (id) => {
+    try {
+        const response = await client.get(`/agent/applications/${id}`);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data?.message || "Failed to fetch application details";
+    }
+};
+
 export const uploadResume = async (file) => {
     try {
         const formData = new FormData();

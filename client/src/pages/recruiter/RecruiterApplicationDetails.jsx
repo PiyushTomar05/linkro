@@ -1,21 +1,22 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { getJobApplications, updateApplicationStatus } from "../../api/recruiter";
+import { getApplicationDetails, getJobApplications, updateApplicationStatus } from "../../api/recruiter";
+import { formatDate } from "../../utils/formatDate";
 import Button from "../../components/ui/Button";
+import ApplicationTimeline from "../../components/ApplicationTimeline";
 
 export default function RecruiterApplicationDetails() {
   const { id } = useParams();
   const [app, setApp] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [note, setNote] = useState("");
 
   useEffect(() => {
-    // Mock get by ID by filtering all
     const loadApp = async () => {
         try {
-            const apps = await getJobApplications();
-            // Check both _id (MongoDB) and id (virtual/mock)
-            const found = apps.find(a => a._id === id || a.id === id);
-            setApp(found);
+            // Fetch single app which also marks as viewed
+            const data = await getApplicationDetails(id);
+            setApp(data);
             setLoading(false);
         } catch (err) {
             console.error(err);
@@ -27,9 +28,16 @@ export default function RecruiterApplicationDetails() {
 
   const handleStatusUpdate = async (status) => {
       try {
-          const updated = await updateApplicationStatus(app.id, status);
-          // Optimistic or response-based update
-          setApp(prev => ({ ...prev, status: updated.status }));
+          const promoNote = prompt("Add a note (optional):", note);
+          // Don't update if user cancelled prompt (returns null)
+          if (promoNote === null) return;
+          
+          await updateApplicationStatus(app.id, status, promoNote);
+          
+          // Re-fetch to get updated timeline and timestamps
+          const updatedApp = await getApplicationDetails(id);
+          setApp(updatedApp);
+          setNote(""); // Reset
       } catch (err) {
           console.error("Failed to update status", err);
           alert("Failed to update status");
@@ -97,6 +105,12 @@ export default function RecruiterApplicationDetails() {
                         </div>
                     </div>
                 </div>
+                
+                {/* Timeline Section */}
+                <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+                    <h2 className="text-xl font-bold text-slate-900 mb-6">Application Timeline</h2>
+                    <ApplicationTimeline timeline={app.timeline} />
+                </div>
           </div>
 
           <div className="space-y-6">
@@ -109,13 +123,19 @@ export default function RecruiterApplicationDetails() {
                         </div>
                         <div>
                             <label className="text-xs font-semibold text-slate-500 uppercase">Applied Date</label>
-                            <p className="font-medium text-slate-900">{new Date(app.appliedAt).toLocaleDateString()}</p>
+                            <p className="font-medium text-slate-900">{formatDate(app.appliedAt)}</p>
                         </div>
                         <div>
                             <label className="text-xs font-semibold text-slate-500 uppercase">Current Status</label>
                              <div className="mt-1">
                                 <span className={`px-2.5 py-1 rounded-full text-xs font-medium capitalize
-                                    ${app.status === 'pending' ? 'bg-yellow-50 text-yellow-600' : 'bg-emerald-50 text-emerald-600'}`}>
+                                    ${
+                                        app.status === 'hired' ? 'bg-green-50 text-green-600' :
+                                        app.status === 'rejected' ? 'bg-red-50 text-red-600' :
+                                        app.status === 'interview' ? 'bg-blue-50 text-blue-600' :
+                                        app.status === 'pending' ? 'bg-yellow-50 text-yellow-600' :
+                                        'bg-slate-100 text-slate-600'
+                                    }`}>
                                     {app.status}
                                 </span>
                              </div>

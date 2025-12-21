@@ -27,6 +27,15 @@ export const getJobDetails = async (id) => {
     }
 };
 
+export const getApplicationDetails = async (id) => {
+    try {
+        const response = await client.get(`/recruiter/applications/${id}`);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data?.message || "Failed to fetch application details";
+    }
+};
+
 export const getJobApplications = async (filters = {}) => {
     try {
         const { jobId } = filters;
@@ -41,9 +50,9 @@ export const getJobApplications = async (filters = {}) => {
     }
 };
 
-export const updateApplicationStatus = async (id, status) => {
+export const updateApplicationStatus = async (id, status, note = '') => {
     try {
-        const response = await client.patch(`/recruiter/applications/${id}/status`, { status });
+        const response = await client.patch(`/recruiter/applications/${id}/status`, { status, note });
         return response.data;
     } catch (error) {
         throw error.response?.data?.message || "Failed to update application status";

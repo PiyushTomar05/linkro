@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Button from "../../components/ui/Button";
 import Input from "../../components/ui/Input";
 import { searchJobs } from "../../api/agent";
+import { formatDate } from "../../utils/formatDate";
 import { MapPinIcon, CurrencyRupeeIcon, ClockIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 export default function AgentJobs() {
@@ -108,7 +109,7 @@ export default function AgentJobs() {
                         </span>
                         <span className="flex items-center text-slate-500 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
                             <ClockIcon className="w-4 h-4 mr-2 text-slate-400" />
-                            {new Date(job.posted).toLocaleDateString()}
+                            {formatDate(job.posted)}
                         </span>
                     </div>
 

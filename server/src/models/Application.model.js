@@ -4,7 +4,15 @@ const applicationSchema = new mongoose.Schema({
     jobId: { type: mongoose.Schema.Types.ObjectId, ref: 'Job', required: true },
     applicantId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     status: { type: String, enum: ['pending', 'interview', 'rejected', 'hired'], default: 'pending' },
-    appliedAt: { type: Date, default: Date.now }
+    appliedAt: { type: Date, default: Date.now },
+    lastViewedByRecruiterAt: { type: Date },
+    lastStatusUpdatedAt: { type: Date },
+    timeline: [{
+        status: { type: String, required: true },
+        note: { type: String },
+        updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        updatedAt: { type: Date, default: Date.now }
+    }]
 });
 
 applicationSchema.virtual('id').get(function () {

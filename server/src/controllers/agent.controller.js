@@ -60,11 +60,46 @@ exports.applyJob = async (req, res) => {
         const application = await Application.create({
             jobId,
             applicantId: req.user._id,
+            jobId,
+            applicantId: req.user._id,
             status: 'pending',
-            appliedAt: new Date()
+            appliedAt: new Date(),
+            timeline: [{
+                status: 'pending',
+                note: 'Application submitted',
+                updatedBy: req.user._id,
+                updatedAt: new Date()
+            }]
         });
 
         res.status(201).json(application);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc    Get single application details for agent
+// @route   GET /api/agent/applications/:id
+exports.getApplicationDetails = async (req, res) => {
+    try {
+        const application = await Application.findOne({
+            _id: req.params.id,
+            applicantId: req.user._id
+        })
+            .populate('jobId', 'title company location description salary type posted status')
+            .populate('timeline.updatedBy', 'name role'); // Populate who updated the status
+
+        if (!application) {
+            return res.status(404).json({ message: 'Application not found' });
+        }
+
+        const transformed = {
+            ...application.toJSON(),
+            jobTitle: application.jobId?.title || 'Unknown Job',
+            company: application.jobId?.company || 'Unknown Company',
+        };
+
+        res.json(transformed);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { getUserById } from "../../api/admin";
+import { formatDate } from "../../utils/formatDate";
 import Button from "../../components/ui/Button";
 
 export default function ManageUserDetails() {
@@ -64,7 +65,7 @@ export default function ManageUserDetails() {
             </div>
             <div>
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Joined Date</label>
-                <p className="mt-1 text-slate-900 font-medium">{user.joined}</p>
+                <p className="mt-1 text-slate-900 font-medium">{formatDate(user.joined)}</p>
             </div>
             {user.company && (
                 <div>

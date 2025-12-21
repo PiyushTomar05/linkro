@@ -13,6 +13,7 @@ import AgentDashboard from "./pages/agent/AgentDashboard";
 import AgentJobs from "./pages/agent/AgentJobs";
 import AgentJobDetails from "./pages/agent/AgentJobDetails";
 import AgentApplications from "./pages/agent/AgentApplications";
+import AgentApplicationDetails from "./pages/agent/AgentApplicationDetails";
 import RecruiterDashboard from "./pages/recruiter/RecruiterDashboard";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 
@@ -49,6 +50,7 @@ export default function App() {
         <Route path="/agent/jobs" element={<Layout><AgentJobs /></Layout>} />
         <Route path="/agent/jobs/:id" element={<Layout><AgentJobDetails /></Layout>} />
         <Route path="/agent/applications" element={<Layout><AgentApplications /></Layout>} />
+        <Route path="/agent/applications/:id" element={<Layout><AgentApplicationDetails /></Layout>} />
 
         <Route path="/recruiter/dashboard" element={<Layout><RecruiterDashboard /></Layout>} />
         <Route path="/admin/dashboard" element={<Layout><AdminDashboard /></Layout>} />
