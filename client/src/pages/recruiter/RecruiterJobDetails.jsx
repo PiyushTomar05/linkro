@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { getJobDetails, getJobApplications } from "../../api/recruiter";
+import { getJobDetails, getJobApplications, updateJobStatus } from "../../api/recruiter";
 import Button from "../../components/ui/Button";
 
 export default function RecruiterJobDetails() {
@@ -27,6 +27,20 @@ export default function RecruiterJobDetails() {
     };
     loadData();
   }, [id]);
+
+  const handleStatusUpdate = async () => {
+    if (!job) return;
+    const newStatus = job.status === 'active' ? 'closed' : 'active';
+    if(confirm(`Are you sure you want to ${newStatus} this job?`)) {
+        try {
+            const updated = await updateJobStatus(id, newStatus);
+            setJob(updated);
+        } catch (err) {
+            console.error(err);
+            alert("Failed to update status");
+        }
+    }
+  };
 
   if (loading) return <div className="p-8 text-center text-slate-500">Loading details...</div>;
   if (!job) return <div className="p-8 text-center text-red-500">Job not found</div>;
@@ -55,7 +69,13 @@ export default function RecruiterJobDetails() {
          </div>
          <div className="flex gap-2">
              <Link to="/recruiter/jobs"><Button variant="secondary">Back</Button></Link>
-             <Button>Edit Job</Button>
+             <Button 
+                variant={job.status === 'active' ? "destructive" : "primary"}
+                onClick={handleStatusUpdate}
+             >
+                {job.status === 'active' ? "Close Job" : "Reopen Job"}
+             </Button>
+             <Link to={`/recruiter/jobs/${id}/edit`}><Button>Edit Job</Button></Link>
          </div>
       </div>
 
@@ -98,7 +118,7 @@ export default function RecruiterJobDetails() {
                             </span>
                         </td>
                         <td className="p-4 text-right">
-                             <Link to={`/recruiter/applications/${app.id}`}>
+                             <Link to={`/recruiter/candidates/${app.id}`}>
                                 <Button variant="secondary" className="px-3 py-1.5 h-auto text-xs">View Application</Button>
                             </Link>
                         </td>

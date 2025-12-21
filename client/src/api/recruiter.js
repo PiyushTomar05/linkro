@@ -40,3 +40,30 @@ export const getJobApplications = async (filters = {}) => {
         throw error.response?.data?.message || "Failed to fetch applications";
     }
 };
+
+export const updateApplicationStatus = async (id, status) => {
+    try {
+        const response = await client.patch(`/recruiter/applications/${id}/status`, { status });
+        return response.data;
+    } catch (error) {
+        throw error.response?.data?.message || "Failed to update application status";
+    }
+};
+
+export const updateJobStatus = async (id, status) => {
+    try {
+        const response = await client.patch(`/recruiter/jobs/${id}/status`, { status });
+        return response.data;
+    } catch (error) {
+        throw error.response?.data?.message || 'Failed to update job status';
+    }
+};
+
+export const updateJob = async (id, jobData) => {
+    try {
+        const response = await client.put(`/recruiter/jobs/${id}`, jobData);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data?.message || 'Failed to update job';
+    }
+};

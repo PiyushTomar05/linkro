@@ -63,7 +63,7 @@ exports.getJobApplications = async (req, res) => {
 
         const applications = await Application.find(filter)
             .populate('jobId', 'title company')
-            .populate('applicantId', 'name email skills'); // Populate applicant details
+            .populate('applicantId', 'name email skills resume'); // Populate applicant details including resume
 
         // Transform for frontend
         const transformed = applications.map(app => ({
@@ -73,9 +73,84 @@ exports.getJobApplications = async (req, res) => {
             applicantName: app.applicantId?.name,
             applicantEmail: app.applicantId?.email,
             skills: app.applicantId?.skills,
+            resume: app.applicantId?.resume,
         }));
 
         res.json(transformed);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc    Update application status
+// @route   PATCH /api/recruiter/applications/:id/status
+exports.updateApplicationStatus = async (req, res) => {
+    try {
+        const { status } = req.body;
+        const { id } = req.params;
+
+        // Find application and populate job to check ownership
+        const application = await Application.findById(id).populate('jobId');
+
+        if (!application) {
+            return res.status(404).json({ message: 'Application not found' });
+        }
+
+        // Verify that the current recruiter owns the job associated with this application
+        if (application.jobId.recruiterId.toString() !== req.user._id.toString()) {
+            return res.status(403).json({ message: 'Unauthorized to update this application' });
+        }
+
+        application.status = status;
+        await application.save();
+
+        res.json(application);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc    Update job status (e.g. close application)
+// @route   PATCH /api/recruiter/jobs/:id/status
+exports.updateJobStatus = async (req, res) => {
+    try {
+        const { status } = req.body;
+        const { id } = req.params;
+
+        const job = await Job.findOne({ _id: id, recruiterId: req.user._id });
+
+        if (!job) {
+            return res.status(404).json({ message: 'Job not found or unauthorized' });
+        }
+
+        job.status = status;
+        await job.save();
+
+        res.json(job);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc    Update job details
+// @route   PUT /api/recruiter/jobs/:id
+exports.updateJobDetails = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const job = await Job.findOne({ _id: id, recruiterId: req.user._id });
+
+        if (!job) {
+            return res.status(404).json({ message: 'Job not found or unauthorized' });
+        }
+
+        const updatedJob = await Job.findByIdAndUpdate(
+            id,
+            { ...req.body },
+            { new: true, runValidators: true }
+        );
+
+        res.json(updatedJob);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

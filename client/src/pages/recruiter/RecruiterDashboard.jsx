@@ -93,7 +93,7 @@ export default function RecruiterDashboard() {
                     </div>
                     <div>
                     <h3 className="font-medium text-slate-900">{app.jobTitle}</h3>
-                    <p className="text-sm text-slate-500">Applied by {app.applicantName} • {app.appliedAt}</p>
+                    <p className="text-sm text-slate-500">Applied by {app.applicantName} • {new Date(app.appliedAt).toLocaleDateString()}</p>
                     </div>
                 </div>
                 <div className="flex gap-2">

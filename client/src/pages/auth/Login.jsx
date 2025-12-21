@@ -30,11 +30,7 @@ export default function Login() {
     }
   };
 
-  const fillDemoDates = (role) => {
-      if (role === 'admin') setFormData({ email: 'admin@linkro.com', password: 'password' });
-      if (role === 'recruiter') setFormData({ email: 'recruiter@company.com', password: 'password' });
-      if (role === 'agent') setFormData({ email: 'john@example.com', password: 'password' });
-  }
+
 
   return (
     <div className="min-h-screen grid lg:grid-cols-2">
@@ -84,14 +80,7 @@ export default function Login() {
                <Link to="/register" className="font-semibold text-indigo-600 hover:text-indigo-500">Sign up</Link>
             </div>
             
-            <div className="mt-8 pt-8 border-t border-gray-100 text-xs text-gray-500 text-center">
-              <p>Demo Login (Click to fill):</p>
-              <div className="flex justify-center gap-2 mt-2 flex-wrap">
-                 <button type="button" onClick={() => fillDemoDates('admin')} className="bg-slate-100 hover:bg-slate-200 px-3 py-1 rounded border transition-colors">Admin</button>
-                 <button type="button" onClick={() => fillDemoDates('recruiter')} className="bg-slate-100 hover:bg-slate-200 px-3 py-1 rounded border transition-colors">Recruiter</button>
-                 <button type="button" onClick={() => fillDemoDates('agent')} className="bg-slate-100 hover:bg-slate-200 px-3 py-1 rounded border transition-colors">Job Seeker</button>
-              </div>
-            </div>
+
           </form>
         </div>
       </div>

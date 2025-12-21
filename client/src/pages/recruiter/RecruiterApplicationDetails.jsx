@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { getJobApplications } from "../../api/recruiter";
+import { getJobApplications, updateApplicationStatus } from "../../api/recruiter";
 import Button from "../../components/ui/Button";
 
 export default function RecruiterApplicationDetails() {
@@ -24,6 +24,17 @@ export default function RecruiterApplicationDetails() {
     };
     loadApp();
   }, [id]);
+
+  const handleStatusUpdate = async (status) => {
+      try {
+          const updated = await updateApplicationStatus(app.id, status);
+          // Optimistic or response-based update
+          setApp(prev => ({ ...prev, status: updated.status }));
+      } catch (err) {
+          console.error("Failed to update status", err);
+          alert("Failed to update status");
+      }
+  };
 
   if (loading) return <div className="p-8 text-center text-slate-500">Loading application...</div>;
   if (!app) return <div className="p-8 text-center text-red-500">Application not found</div>;
@@ -53,10 +64,22 @@ export default function RecruiterApplicationDetails() {
                     
                     <div className="space-y-4">
                         <h4 className="font-semibold text-slate-900">Resume</h4>
-                        <div className="p-4 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
-                             <span className="text-sm text-slate-600">resume_john_doe.pdf</span>
-                             <Button variant="secondary" className="px-3 py-1 h-auto text-xs">Download</Button>
-                        </div>
+                        {app.resume ? (
+                            <div className="p-4 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
+                                 <span className="text-sm text-slate-600 truncate max-w-[200px]">{app.resume}</span>
+                                 <a 
+                                    href={`http://localhost:5000/uploads/resumes/${app.resume}`} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                 >
+                                    <Button variant="secondary" className="px-3 py-1 h-auto text-xs">Download</Button>
+                                 </a>
+                            </div>
+                        ) : (
+                            <div className="p-4 bg-slate-50 rounded-xl border border-dashed border-slate-300 text-center text-slate-500 text-sm">
+                                No resume uploaded
+                            </div>
+                        )}
                     </div>
                 </div>
           </div>
@@ -71,7 +94,7 @@ export default function RecruiterApplicationDetails() {
                         </div>
                         <div>
                             <label className="text-xs font-semibold text-slate-500 uppercase">Applied Date</label>
-                            <p className="font-medium text-slate-900">{app.appliedAt}</p>
+                            <p className="font-medium text-slate-900">{new Date(app.appliedAt).toLocaleDateString()}</p>
                         </div>
                         <div>
                             <label className="text-xs font-semibold text-slate-500 uppercase">Current Status</label>
@@ -85,8 +108,24 @@ export default function RecruiterApplicationDetails() {
                     </div>
                     
                     <div className="mt-6 pt-6 border-t border-slate-100 space-y-2">
-                        <Button className="w-full">Move to Interview</Button>
-                        <Button variant="danger" className="w-full">Reject Application</Button>
+                        {app.status === 'pending' && (
+                            <>
+                                <Button className="w-full" onClick={() => handleStatusUpdate('interview')}>Move to Interview</Button>
+                                <Button variant="danger" className="w-full" onClick={() => handleStatusUpdate('rejected')}>Reject Application</Button>
+                            </>
+                        )}
+                        {app.status === 'interview' && (
+                            <>
+                                <Button className="w-full bg-emerald-600 hover:bg-emerald-700" onClick={() => handleStatusUpdate('hired')}>Hire Candidate</Button>
+                                <Button variant="danger" className="w-full" onClick={() => handleStatusUpdate('rejected')}>Reject Application</Button>
+                            </>
+                        )}
+                         {app.status === 'rejected' && (
+                             <div className="text-center text-red-500 font-medium p-2 bg-red-50 rounded">Application Rejected</div>
+                        )}
+                        {app.status === 'hired' && (
+                             <div className="text-center text-emerald-600 font-medium p-2 bg-emerald-50 rounded">Candidate Hired</div>
+                        )}
                     </div>
                 </div>
           </div>

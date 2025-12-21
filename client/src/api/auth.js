@@ -14,7 +14,8 @@ export const loginUser = async (email, password) => {
         const response = await client.post("/auth/login", { email, password });
         return response.data;
     } catch (error) {
-        throw error.response?.data?.message || "Login failed";
+        console.error("Login API Error:", error);
+        throw error.response?.data?.message || error.message || "Login failed";
     }
 };
 

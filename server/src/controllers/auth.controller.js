@@ -57,6 +57,7 @@ exports.login = async (req, res) => {
         const user = await User.findOne({ email });
 
         if (user && (await bcrypt.compare(password, user.password))) {
+            console.log("Login successful for:", email);
             const { password, ...userWithoutPass } = user.toJSON();
             res.json({
                 ...userWithoutPass,

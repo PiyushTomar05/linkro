@@ -48,8 +48,8 @@ export default function RecruiterApplications() {
                 <tbody className="text-sm">
                 {applications.map((app) => (
                     <tr key={app.id} className="border-b border-slate-50 last:border-0 hover:bg-slate-50/50">
-                    <td className="p-4 font-medium text-slate-900">{app.jobTitle || "Unknown Job"}</td>
-                    <td className="p-4 text-slate-600">{app.applicantName || "Unknown Applicant"}</td>
+                    <td className="p-4 font-medium text-slate-900">{app.applicantName || "Unknown Applicant"}</td>
+                    <td className="p-4 text-slate-600">{app.jobTitle || "Unknown Job"}</td>
                     <td className="p-4 text-slate-500">{new Date(app.appliedAt).toLocaleDateString()}</td>
                     <td className="p-4">
                         <span className={`px-2.5 py-1 rounded-full text-xs font-medium capitalize
@@ -59,7 +59,7 @@ export default function RecruiterApplications() {
                         </span>
                     </td>
                     <td className="p-4 text-right">
-                        <Link to={`/recruiter/applications/${app.id}`}>
+                        <Link to={`/recruiter/candidates/${app.id}`}>
                             <Button variant="secondary" className="px-3 py-1.5 h-auto text-xs">View Details</Button>
                         </Link>
                     </td>

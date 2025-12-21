@@ -35,3 +35,19 @@ export const getMyApplications = async () => {
         throw error.response?.data?.message || "Failed to fetch applications";
     }
 };
+
+export const uploadResume = async (file) => {
+    try {
+        const formData = new FormData();
+        formData.append('resume', file);
+
+        const response = await client.post("/agent/resume", formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return response.data;
+    } catch (error) {
+        throw error.response?.data?.message || "Failed to upload resume";
+    }
+};

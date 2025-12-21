@@ -18,6 +18,15 @@ export const getSystemLogs = async () => {
     }
 };
 
+export const getAnalyticsGrowth = async () => {
+    try {
+        const response = await client.get("/admin/analytics/growth");
+        return response.data;
+    } catch (error) {
+        throw error.response?.data?.message || "Failed to fetch growth stats";
+    }
+};
+
 export const getUsers = async () => {
     try {
         const response = await client.get("/users");

@@ -26,7 +26,7 @@ export default function ManageUsers() {
     if(confirm("Are you sure you want to delete this user?")) {
         try {
             await deleteUser(id);
-            setUsers(users.filter((u) => u._id !== id));
+            setUsers(users.filter((u) => u.id !== id));
         } catch (err) {
             console.error("Failed to delete user", err);
             alert("Failed to delete user");

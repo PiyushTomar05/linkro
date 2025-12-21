@@ -1,5 +1,6 @@
 const Job = require('../models/Job.model');
 const Application = require('../models/Application.model');
+const User = require('../models/User.model');
 
 // @desc    Search and list all active jobs
 // @route   GET /api/agent/jobs
@@ -84,6 +85,31 @@ exports.getMyApplications = async (req, res) => {
         }));
 
         res.json(transformed);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc    Upload resume
+// @route   POST /api/agent/resume
+exports.uploadResume = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: 'No file uploaded' });
+        }
+
+        const user = await User.findById(req.user._id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        user.resume = req.file.filename;
+        await user.save();
+
+        res.json({
+            message: 'Resume uploaded successfully',
+            filename: req.file.filename
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

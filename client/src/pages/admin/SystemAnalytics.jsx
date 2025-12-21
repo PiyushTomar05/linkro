@@ -1,7 +1,26 @@
+import { useState, useEffect } from "react";
 import StatCard from "../../components/ui/StatCard";
 import { ArrowTrendingUpIcon, ServerIcon, GlobeAltIcon } from "@heroicons/react/24/outline";
+import { getAnalyticsGrowth } from "../../api/admin";
 
 export default function SystemAnalytics() {
+  const [growthData, setGrowthData] = useState([]);
+  const [maxCount, setMaxCount] = useState(1);
+
+  useEffect(() => {
+    const fetchGrowth = async () => {
+        try {
+            const data = await getAnalyticsGrowth();
+            setGrowthData(data);
+            const max = Math.max(...data.map(d => d.count), 1);
+            setMaxCount(max);
+        } catch (error) {
+            console.error("Failed to fetch growth data", error);
+        }
+    };
+    fetchGrowth();
+  }, []);
+
   return (
     <div className="space-y-8">
       <div>
@@ -36,16 +55,23 @@ export default function SystemAnalytics() {
          <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 min-h-[300px] flex flex-col">
             <h3 className="font-bold text-slate-900 mb-6">User Growth (Last 7 Days)</h3>
             <div className="flex-1 flex items-end justify-between gap-2 px-2">
-                {[40, 65, 45, 80, 55, 90, 75].map((h, i) => (
-                    <div key={i} className="w-full bg-indigo-50 rounded-t-lg relative group transition-all duration-300 hover:bg-indigo-100" style={{ height: `${h}%` }}>
-                        <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                            {h * 10} Users
+                {growthData.length > 0 ? (
+                    growthData.map((item, i) => (
+                        <div key={i} className="w-full bg-indigo-50 rounded-t-lg relative group transition-all duration-300 hover:bg-indigo-100" 
+                             style={{ height: `${(item.count / maxCount) * 100}%`, minHeight: '4px' }}>
+                            <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                                {item.count} Users
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    ))
+                ) : (
+                    <div className="w-full text-center text-slate-400 text-sm">Loading chart...</div>
+                )}
             </div>
             <div className="flex justify-between mt-2 text-xs text-slate-400 px-2 font-medium">
-                <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+                {growthData.map((item, i) => (
+                    <span key={i} className="w-full text-center">{item.day}</span>
+                ))}
             </div>
          </div>
 

@@ -1,11 +1,12 @@
 import { useState, useEffect, useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getMyApplications } from "../../api/agent";
 import { AuthContext } from "../../context/AuthContext";
 import Button from "../../components/ui/Button";
 
 export default function AgentApplications() {
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -51,14 +52,15 @@ export default function AgentApplications() {
                 </thead>
                 <tbody className="text-sm">
                 {applications.map((app) => (
-                    <tr key={app.id} className="border-b border-slate-50 last:border-0 hover:bg-slate-50/50">
-                    <td className="p-4 font-medium text-slate-900">{app.job?.title || "Unknown Job"}</td>
-                    <td className="p-4 text-slate-600">{app.job?.company?.name || app.job?.company || "Unknown Company"}</td>
+                    <tr key={app.id} onClick={() => app.jobId?.id && navigate(`/agent/jobs/${app.jobId.id}`)} className="border-b border-slate-50 last:border-0 hover:bg-slate-50/50 cursor-pointer">
+                    <td className="p-4 font-medium text-slate-900">{app.jobTitle || "Unknown Job"}</td>
+                    <td className="p-4 text-slate-600">{app.company || "Unknown Company"}</td>
                     <td className="p-4 text-slate-600">{new Date(app.appliedAt).toLocaleDateString()}</td>
                     <td className="p-4">
                         <span className={`px-2.5 py-1 rounded-full text-xs font-medium capitalize
                         ${app.status === 'pending' ? 'bg-yellow-50 text-yellow-600' : 
-                          app.status === 'accepted' ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'}`}>
+                          (app.status === 'accepted' || app.status === 'hired') ? 'bg-emerald-50 text-emerald-600' : 
+                          app.status === 'interview' ? 'bg-purple-50 text-purple-600' : 'bg-red-50 text-red-600'}`}>
                         {app.status}
                         </span>
                     </td>

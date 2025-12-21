@@ -4,6 +4,7 @@ const { getSystemStats, getSystemLogs } = require('../controllers/admin.controll
 
 router.get('/stats', getSystemStats);
 router.get('/logs', getSystemLogs);
+router.get('/analytics/growth', require('../controllers/admin.controller').getUserGrowthStats);
 
 // Extended admin routes
 const { getAllJobs, deleteUser, deleteJob } = require('../controllers/admin.controller');

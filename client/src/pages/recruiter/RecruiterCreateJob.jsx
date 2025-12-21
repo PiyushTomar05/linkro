@@ -1,13 +1,16 @@
-import { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useContext, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import Button from "../../components/ui/Button";
 import Input from "../../components/ui/Input";
-import { postJob } from "../../api/recruiter";
+import { postJob, getJobDetails, updateJob } from "../../api/recruiter";
 import { AuthContext } from "../../context/AuthContext";
 
 export default function RecruiterCreateJob() {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
+  const { id } = useParams(); // Get ID from URL if editing
+  const isEditMode = !!id;
+
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
@@ -17,15 +20,39 @@ export default function RecruiterCreateJob() {
     description: ""
   });
 
+  // Fetch job details if in edit mode
+  useEffect(() => {
+    if (isEditMode) {
+        setLoading(true);
+        getJobDetails(id)
+            .then(data => {
+                setFormData({
+                    title: data.title,
+                    location: data.location,
+                    salary: data.salary,
+                    type: data.type,
+                    description: data.description
+                });
+            })
+            .catch(err => console.error("Failed to fetch job:", err))
+            .finally(() => setLoading(false));
+    }
+  }, [id, isEditMode]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
+
     try {
-        await postJob({
-            ...formData,
-            company: user.company || "My Company", // Default if not in user profile
-        });
+        if (isEditMode) {
+            await updateJob(id, formData);
+        } else {
+            await postJob({
+                ...formData,
+                company: user.company || "My Company",
+            });
+        }
         navigate("/recruiter/jobs");
     } catch (err) {
         console.error(err);
@@ -37,7 +64,7 @@ export default function RecruiterCreateJob() {
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-slate-900">Post a New Job</h1>
+        <h1 className="text-2xl font-bold text-slate-900">{isEditMode ? "Edit Job" : "Post a New Job"}</h1>
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-8">
@@ -53,14 +80,14 @@ export default function RecruiterCreateJob() {
             <div className="grid md:grid-cols-2 gap-6">
                 <Input
                     label="Location"
-                    placeholder="e.g. Remote, New York, NY"
+                    placeholder="e.g. Remote, Bangalore, Pune"
                     value={formData.location}
                     onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                     required
                 />
                  <Input
                     label="Salary Range"
-                    placeholder="e.g. $100k - $120k"
+                    placeholder="e.g. ₹8L - ₹12L"
                     value={formData.salary}
                     onChange={(e) => setFormData({ ...formData, salary: e.target.value })}
                     required
@@ -94,7 +121,7 @@ export default function RecruiterCreateJob() {
 
             <div className="pt-4 flex justify-end gap-3">
                 <Button type="button" variant="secondary" onClick={() => navigate("/recruiter/jobs")}>Cancel</Button>
-                <Button type="submit" loading={loading}>Post Job</Button>
+                <Button type="submit" loading={loading}>{isEditMode ? "Update Job" : "Post Job"}</Button>
             </div>
         </form>
       </div>

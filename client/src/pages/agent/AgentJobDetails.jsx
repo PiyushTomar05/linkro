@@ -27,7 +27,7 @@ export default function AgentJobDetails() {
              const apps = await getMyApplications();
              // Check if any application matches this job ID.
              // Note: backend might populate jobId, so check both id string and object._id
-             const applied = apps.some(a => (a.jobId?._id === id || a.jobId === id));
+             const applied = apps.some(a => (a.jobId?._id === id || a.jobId === id || a.jobId?.id === id));
              setHasApplied(applied);
          }
      } catch (err) {

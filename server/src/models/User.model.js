@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
 
     // Agent fields
     skills: [{ type: String }],
+    resume: { type: String }, // Path to resume file
 
     status: { type: String, enum: ['active', 'inactive'], default: 'active' },
     joined: { type: Date, default: Date.now }

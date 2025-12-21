@@ -1,7 +1,8 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useRef } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import Button from "../../components/ui/Button";
 import Input from "../../components/ui/Input";
+import { uploadResume } from "../../api/agent";
 
 export default function Profile() {
   const { user, login } = useContext(AuthContext); // Using login to update user state mock
@@ -13,15 +14,33 @@ export default function Profile() {
     skills: user?.skills || []
   });
   const [success, setSuccess] = useState(false);
+  const [resumeData, setResumeData] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     // In a real app, update via API.
     // Here we just simulate updating local state/context
-    // We can't actually update AuthContext user easily without a specific setter, 
-    // but the scope of this is mock UI.
     setSuccess(true);
     setTimeout(() => setSuccess(false), 3000);
+  };
+
+  const handleFileChange = async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      setUploading(true);
+      try {
+          await uploadResume(file);
+          setResumeData(file.name);
+          alert("Resume uploaded successfully!");
+      } catch (err) {
+          console.error(err);
+          alert("Failed to upload resume.");
+      } finally {
+          setUploading(false);
+      }
   };
 
   return (
@@ -68,6 +87,37 @@ export default function Profile() {
                         onChange={(e) => setFormData({...formData, skills: e.target.value})}
                         placeholder="React, CSS, Node.js"
                     />
+                </div>
+            )}
+            
+            {user?.role === 'agent' && (
+                <div>
+                   <label className="block text-sm font-medium text-slate-700 mb-2">Resume / CV</label>
+                   <div className="flex items-center gap-4">
+                       <input 
+                           type="file" 
+                           accept=".pdf,.doc,.docx"
+                           className="hidden" 
+                           ref={fileInputRef}
+                           onChange={handleFileChange}
+                       />
+                       <Button 
+                           type="button" 
+                           variant="secondary" 
+                           onClick={() => fileInputRef.current?.click()}
+                           disabled={uploading}
+                        >
+                           {uploading ? "Uploading..." : "Upload Resume"}
+                       </Button>
+                       {resumeData ? (
+                            <span className="text-sm text-slate-600">{resumeData}</span>
+                       ) : user.resume ? (
+                            <span className="text-sm text-slate-600 truncate max-w-[200px]">{user.resume}</span>
+                       ) : (
+                            <span className="text-sm text-slate-400">No resume uploaded</span>
+                       )}
+                   </div>
+                   <p className="text-xs text-slate-400 mt-1">Accepted formats: PDF, DOC, DOCX (Max 5MB)</p>
                 </div>
             )}
 

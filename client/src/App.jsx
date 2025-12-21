@@ -66,6 +66,7 @@ export default function App() {
         {/* RECRUITER ROUTES */}
         <Route path="/recruiter/jobs" element={<Layout><RecruiterJobs /></Layout>} />
         <Route path="/recruiter/jobs/new" element={<Layout><RecruiterCreateJob /></Layout>} />
+        <Route path="/recruiter/jobs/:id/edit" element={<Layout><RecruiterCreateJob /></Layout>} />
         <Route path="/recruiter/jobs/:id" element={<Layout><RecruiterJobDetails /></Layout>} />
         <Route path="/recruiter/candidates" element={<Layout><RecruiterApplications /></Layout>} />
         <Route path="/recruiter/candidates/:id" element={<Layout><RecruiterApplicationDetails /></Layout>} />
