@@ -117,12 +117,44 @@ exports.deleteUser = async (req, res) => {
     }
 };
 
+// @desc    Update user status
+// @route   PATCH /api/admin/users/:id/status
+exports.updateUserStatus = async (req, res) => {
+    try {
+        const { status } = req.body;
+        const user = await User.findByIdAndUpdate(
+            req.params.id,
+            { status },
+            { new: true }
+        );
+        res.json(user);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 // @desc    Delete job
 // @route   DELETE /api/admin/jobs/:id
 exports.deleteJob = async (req, res) => {
     try {
         await Job.findByIdAndDelete(req.params.id);
         res.json({ message: 'Job deleted' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc    Update job status
+// @route   PATCH /api/admin/jobs/:id/status
+exports.updateJobStatus = async (req, res) => {
+    try {
+        const { status } = req.body;
+        const job = await Job.findByIdAndUpdate(
+            req.params.id,
+            { status },
+            { new: true }
+        );
+        res.json(job);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -158,6 +190,50 @@ exports.getUserGrowthStats = async (req, res) => {
         }
 
         res.json(stats);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc    Get extended analytics stats (distribution)
+// @route   GET /api/admin/analytics/stats
+exports.getAnalyticsStats = async (req, res) => {
+    try {
+        // 1. Application Status Distribution
+        const appStatsArray = await Application.aggregate([
+            { $group: { _id: "$status", count: { $sum: 1 } } }
+        ]);
+
+        // Convert to object { pending: 10, hired: 5 ... }
+        const appStats = { pending: 0, interview: 0, hired: 0, rejected: 0 };
+        appStatsArray.forEach(s => {
+            if (s._id) appStats[s._id] = s.count;
+        });
+
+        // 2. User Role Distribution
+        const userStatsArray = await User.aggregate([
+            { $group: { _id: "$role", count: { $sum: 1 } } }
+        ]);
+
+        const userStats = { agent: 0, recruiter: 0, admin: 0 };
+        userStatsArray.forEach(s => {
+            if (s._id) userStats[s._id] = s.count;
+        });
+
+        // 3. Job Status Distribution
+        const jobStatsArray = await Job.aggregate([
+            { $group: { _id: "$status", count: { $sum: 1 } } }
+        ]);
+        const jobStats = { active: 0, closed: 0 };
+        jobStatsArray.forEach(s => {
+            if (s._id) jobStats[s._id] = s.count;
+        });
+
+        res.json({
+            appStats,
+            userStats,
+            jobStats
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

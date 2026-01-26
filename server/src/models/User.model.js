@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema({
     skills: [{ type: String }],
     resume: { type: String }, // Path to resume file
 
+    profilePicture: { type: String },
     status: { type: String, enum: ['active', 'inactive'], default: 'active' },
     joined: { type: Date, default: Date.now }
 });

@@ -18,9 +18,9 @@ export const getJobDetails = async (id) => {
     }
 };
 
-export const applyForJob = async (jobId) => {
+export const applyForJob = async (jobId, coverLetter = "") => {
     try {
-        const response = await client.post("/agent/apply", { jobId });
+        const response = await client.post("/agent/apply", { jobId, coverLetter });
         return response.data;
     } catch (error) {
         throw error.response?.data?.message || "Failed to apply for job";

@@ -1,16 +1,16 @@
 import { forwardRef } from "react";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 
-const Button = forwardRef(({ 
-  className = "", 
-  variant = "primary", 
-  size = "md", 
-  loading = false, 
-  children, 
-  ...props 
+const Button = forwardRef(({
+  className = "",
+  variant = "primary",
+  size = "md",
+  loading = false,
+  children,
+  ...props
 }, ref) => {
   const baseStyles = "inline-flex items-center justify-center font-medium transition-all duration-200 focus:outline-none disabled:opacity-70 disabled:cursor-not-allowed active:scale-[0.98]";
-  
+
   const variants = {
     primary: "bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 rounded-xl",
     secondary: "bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 hover:border-slate-300 shadow-sm rounded-xl",

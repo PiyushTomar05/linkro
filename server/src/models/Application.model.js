@@ -5,6 +5,7 @@ const applicationSchema = new mongoose.Schema({
     applicantId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     status: { type: String, enum: ['pending', 'interview', 'rejected', 'hired'], default: 'pending' },
     appliedAt: { type: Date, default: Date.now },
+    coverLetter: { type: String },
     lastViewedByRecruiterAt: { type: Date },
     lastStatusUpdatedAt: { type: Date },
     timeline: [{

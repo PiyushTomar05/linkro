@@ -43,14 +43,14 @@ export default function AuthProvider({ children }) {
   const register = async (data) => {
     setLoading(true);
     try {
-        const userData = await registerUser(data);
-        localStorage.setItem('token', userData.token);
-        setUser(userData);
-        return userData;
+      const userData = await registerUser(data);
+      localStorage.setItem('token', userData.token);
+      setUser(userData);
+      return userData;
     } catch (error) {
-        throw error;
+      throw error;
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
   };
 
@@ -59,9 +59,13 @@ export default function AuthProvider({ children }) {
     setUser(null);
   };
 
+  const updateUser = (userData) => {
+    setUser(prev => ({ ...prev, ...userData }));
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, loading }}>
-        {children}
+    <AuthContext.Provider value={{ user, login, register, logout, updateUser, loading }}>
+      {children}
     </AuthContext.Provider>
   );
 }

@@ -41,14 +41,21 @@ exports.getJobDetails = async (req, res) => {
 
 // @desc    Apply for a job
 // @route   POST /api/agent/apply
+// @desc    Apply for a job
+// @route   POST /api/agent/apply
 exports.applyJob = async (req, res) => {
     try {
-        const { jobId } = req.body;
+        const { jobId, coverLetter } = req.body;
 
         // Check if job exists and is active
         const job = await Job.findById(jobId);
         if (!job || job.status !== 'active') {
             return res.status(400).json({ message: 'Job not found or not active' });
+        }
+
+        // Check if user has a resume
+        if (!req.user.resume) {
+            return res.status(400).json({ message: 'Please upload your resume in your profile before applying.' });
         }
 
         // Check if already applied
@@ -60,8 +67,7 @@ exports.applyJob = async (req, res) => {
         const application = await Application.create({
             jobId,
             applicantId: req.user._id,
-            jobId,
-            applicantId: req.user._id,
+            coverLetter,
             status: 'pending',
             appliedAt: new Date(),
             timeline: [{

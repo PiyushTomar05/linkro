@@ -1,7 +1,14 @@
 {
+  "name": "linkro-root",
+  "version": "1.0.0",
+  "description": "Root script for Linkro",
+  "scripts": {
+    "install-all": "npm install && cd client && npm install && cd ../server && npm install",
+    "build": "cd client && npm run build",
+    "start": "cd server && npm start",
+    "dev": "concurrently \"cd server && npm run dev\" \"cd client && npm run dev\""
+  },
   "dependencies": {
-    "bcryptjs": "^3.0.3",
-    "dotenv": "^17.2.3",
-    "mongoose": "^9.0.2"
+    "concurrently": "^8.2.2"
   }
 }

@@ -1,5 +1,6 @@
 import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 import { AuthContext } from "../../context/AuthContext";
 import Input from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
@@ -7,7 +8,7 @@ import Button from "../../components/ui/Button";
 export default function Login() {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({ email: "admin@linkro.com", password: "password" });
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -15,15 +16,17 @@ export default function Login() {
     e.preventDefault();
     setError("");
     setLoading(true);
-    
+
     try {
       const user = await login(formData.email, formData.password);
+      toast.success(`Welcome back, ${user.name}!`);
       // Redirect based on role
       if (user.role === "admin") navigate("/admin/dashboard");
       else if (user.role === "agent") navigate("/agent/dashboard");
       else if (user.role === "recruiter") navigate("/recruiter/dashboard");
     } catch (err) {
       console.error("Login failed:", err);
+      toast.error(err.response?.data?.message || "Login failed. Please check your credentials.");
       setError(err.toString());
     } finally {
       setLoading(false);
@@ -74,12 +77,12 @@ export default function Login() {
             <Button type="submit" className="w-full" loading={loading}>
               Sign In
             </Button>
-            
+
             <div className="text-center text-sm">
-               <span className="text-slate-500">Don't have an account? </span>
-               <Link to="/register" className="font-semibold text-indigo-600 hover:text-indigo-500">Sign up</Link>
+              <span className="text-slate-500">Don't have an account? </span>
+              <Link to="/register" className="font-semibold text-indigo-600 hover:text-indigo-500">Sign up</Link>
             </div>
-            
+
 
           </form>
         </div>
@@ -89,12 +92,12 @@ export default function Login() {
       <div className="hidden lg:flex relative bg-slate-900 items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 to-violet-600/20" />
         <div className="relative z-10 text-center text-white px-12">
-           <h2 className="text-5xl font-bold mb-6">Connect & Grow</h2>
-           <p className="text-xl text-indigo-100 max-w-lg mx-auto leading-relaxed">
-             Efficiently manage your recruitment process with Linkro's advanced platform.
-           </p>
+          <h2 className="text-5xl font-bold mb-6">Connect & Grow</h2>
+          <p className="text-xl text-indigo-100 max-w-lg mx-auto leading-relaxed">
+            Efficiently manage your recruitment process with Linkro's advanced platform.
+          </p>
         </div>
-        
+
         {/* Abstract Shapes */}
         <div className="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-indigo-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
         <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-96 h-96 bg-violet-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>

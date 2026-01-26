@@ -27,6 +27,15 @@ export const getAnalyticsGrowth = async () => {
     }
 };
 
+export const getAnalyticsStats = async () => {
+    try {
+        const response = await client.get("/admin/analytics/stats");
+        return response.data;
+    } catch (error) {
+        throw error.response?.data?.message || "Failed to fetch analytics stats";
+    }
+};
+
 export const getUsers = async () => {
     try {
         const response = await client.get("/users");
@@ -54,6 +63,15 @@ export const deleteUser = async (id) => {
     }
 };
 
+export const updateUserStatus = async (id, status) => {
+    try {
+        const response = await client.patch(`/admin/users/${id}/status`, { status });
+        return response.data;
+    } catch (error) {
+        throw error.response?.data?.message || "Failed to update user status";
+    }
+};
+
 export const getJobs = async () => {
     try {
         const response = await client.get("/admin/jobs");
@@ -72,6 +90,15 @@ export const deleteJob = async (id) => {
     }
 };
 
+export const updateJobStatus = async (id, status) => {
+    try {
+        const response = await client.patch(`/admin/jobs/${id}/status`, { status });
+        return response.data;
+    } catch (error) {
+        throw error.response?.data?.message || "Failed to update job status";
+    }
+};
+
 export const getJobDetails = async (id) => {
     try {
         // Use agent endpoint to view job details as it is public/accessible
@@ -79,5 +106,14 @@ export const getJobDetails = async (id) => {
         return response.data;
     } catch (error) {
         throw error.response?.data?.message || "Failed to fetch job details";
+    }
+};
+
+export const createUser = async (userData) => {
+    try {
+        const response = await client.post("/auth/register", userData);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data?.message || "Failed to create user";
     }
 };

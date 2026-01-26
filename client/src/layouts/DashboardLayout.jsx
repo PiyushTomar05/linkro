@@ -1,12 +1,12 @@
 import { useState, useContext } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-import { 
-  HomeIcon, 
-  UsersIcon, 
-  BriefcaseIcon, 
-  ChartBarIcon, 
-  Cog6ToothIcon, 
+import {
+  HomeIcon,
+  UsersIcon,
+  BriefcaseIcon,
+  ChartBarIcon,
+  Cog6ToothIcon,
   ArrowRightOnRectangleIcon,
   Bars3Icon,
   XMarkIcon,
@@ -55,16 +55,16 @@ export default function DashboardLayout({ children }) {
     <div className="min-h-screen flex relative overflow-hidden">
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-slate-900/20 z-40 lg:hidden backdrop-blur-sm transition-opacity"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       {/* Sidebar */}
-      <aside 
+      <aside
         className={`
-          fixed lg:static inset-y-0 left-0 z-50 w-72 bg-white/80 backdrop-blur-xl border-r border-slate-200/60 shadow-2xl lg:shadow-none transform transition-transform duration-300 ease-out
+          fixed inset-y-0 left-0 h-screen z-50 w-72 bg-white/80 backdrop-blur-xl border-r border-slate-200/60 shadow-2xl lg:shadow-none transform transition-transform duration-300 ease-out
           ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
         `}
       >
@@ -79,7 +79,7 @@ export default function DashboardLayout({ children }) {
                 Linkro
               </span>
             </div>
-            <button 
+            <button
               className="ml-auto lg:hidden text-slate-400 hover:text-slate-600 transition-colors"
               onClick={() => setSidebarOpen(false)}
             >
@@ -98,8 +98,8 @@ export default function DashboardLayout({ children }) {
                   onClick={() => setSidebarOpen(false)}
                   className={`
                     group flex items-center gap-3.5 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 relative overflow-hidden
-                    ${isActive 
-                      ? "bg-indigo-50 text-indigo-600 shadow-sm ring-1 ring-indigo-500/10" 
+                    ${isActive
+                      ? "bg-indigo-50 text-indigo-600 shadow-sm ring-1 ring-indigo-500/10"
                       : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
                     }
                   `}
@@ -116,19 +116,23 @@ export default function DashboardLayout({ children }) {
 
           {/* User Profile / Logout */}
           <div className="mt-auto pt-4 border-t border-slate-100">
-             <Link to="/profile" className="block">
+            <Link to="/profile" className="block">
               <div className="bg-slate-50/80 p-3 rounded-2xl border border-slate-100 mb-3 flex items-center gap-3 hover:bg-white hover:shadow-md transition-all cursor-pointer group">
-                <div className="w-10 h-10 rounded-full bg-white border-2 border-white shadow-sm flex items-center justify-center text-indigo-600 font-bold text-sm ring-2 ring-indigo-50 group-hover:ring-indigo-100 transition-all">
-                   {user?.name?.charAt(0) || "U"}
+                <div className="w-10 h-10 rounded-full bg-white border-2 border-white shadow-sm flex items-center justify-center text-indigo-600 font-bold text-sm ring-2 ring-indigo-50 group-hover:ring-indigo-100 transition-all overflow-hidden">
+                  {user?.profilePicture ? (
+                    <img src={`http://localhost:5000/${user.profilePicture}`} alt="Avatar" className="w-full h-full object-cover" />
+                  ) : (
+                    user?.name?.charAt(0) || "U"
+                  )}
                 </div>
                 <div className="flex-1 min-w-0">
-                   <p className="text-sm font-semibold text-slate-900 truncate">{user?.name}</p>
-                   <p className="text-xs text-slate-500 truncate capitalize">{user?.role}</p>
+                  <p className="text-sm font-semibold text-slate-900 truncate">{user?.name}</p>
+                  <p className="text-xs text-slate-500 truncate capitalize">{user?.role}</p>
                 </div>
-             </div>
-             </Link>
+              </div>
+            </Link>
 
-             <button
+            <button
               onClick={handleLogout}
               className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
             >
@@ -140,10 +144,10 @@ export default function DashboardLayout({ children }) {
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-h-screen transition-all duration-300">
+      <div className="flex-1 lg:ml-72 flex flex-col min-h-screen transition-all duration-300">
         {/* Header (Mobile Only) */}
         <header className="h-16 lg:hidden flex items-center px-4 sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-slate-100">
-          <button 
+          <button
             onClick={() => setSidebarOpen(true)}
             className="p-2 -ml-2 text-slate-500 hover:bg-slate-100 rounded-xl transition-colors"
           >
