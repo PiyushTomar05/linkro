@@ -1,28 +1,23 @@
 require('dotenv').config();
 
-let app;
-let isConnected = false;
+// Top-level requires are essential — Vercel's nft (Node File Tracer)
+// only traces static requires at the module level, not inside functions.
+// These imports ensure Express, Mongoose, and all server deps get bundled.
+const connectDB = require('../server/src/config/db');
+const app = require('../server/src/app');
+
+let dbConnected = false;
 
 module.exports = async (req, res) => {
-  try {
-    // Lazy-load to catch module errors
-    if (!app) {
-      const connectDB = require('../server/src/config/db');
-      app = require('../server/src/app');
-
-      if (!isConnected) {
-        await connectDB();
-        isConnected = true;
-      }
+  if (!dbConnected) {
+    try {
+      await connectDB();
+      dbConnected = true;
+    } catch (err) {
+      console.error('[DB] Connection failed:', err.message);
+      return res.status(500).json({ message: 'Database connection failed', error: err.message });
     }
-
-    return app(req, res);
-  } catch (error) {
-    console.error('[Serverless] Fatal error:', error);
-    return res.status(500).json({
-      message: 'Internal Server Error',
-      error: error.message,
-      stack: error.stack
-    });
   }
+
+  return app(req, res);
 };
