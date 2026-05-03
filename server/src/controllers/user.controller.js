@@ -36,12 +36,10 @@ exports.uploadProfilePicture = async (req, res) => {
             return res.status(400).json({ message: 'No file uploaded' });
         }
 
-        // Normalize path separators to forward slashes for URL usage
-        const filePath = req.file.path.replace(/\\/g, '/');
-
+        // req.file.path is the full Cloudinary HTTPS URL
         const user = await User.findByIdAndUpdate(
             req.user._id,
-            { profilePicture: filePath },
+            { profilePicture: req.file.path },
             { new: true }
         ).select('-password');
 

@@ -76,7 +76,7 @@ export default function RecruiterApplicationDetails() {
                             <div className="p-4 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
                                  <span className="text-sm text-slate-600 truncate max-w-[200px]">{app.resume}</span>
                                  <a 
-                                    href={`${(import.meta.env.VITE_API_URL || '/api').replace('/api', '')}/uploads/resumes/${app.resume}`} 
+                                    href={app.resume} 
                                     target="_blank" 
                                     rel="noopener noreferrer"
                                  >

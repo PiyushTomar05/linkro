@@ -1,28 +1,22 @@
 const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require('../config/cloudinary');
 
-// Ensure upload directory exists
-const uploadDir = 'uploads/profiles';
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, uploadDir);
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'linkro/profiles',
+        allowed_formats: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
+        transformation: [{ width: 400, height: 400, crop: 'fill', gravity: 'face' }],
+        public_id: (req, file) => {
+            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+            const prefix = req.user ? req.user._id : 'guest';
+            return prefix + '-' + uniqueSuffix;
+        },
     },
-    filename: function (req, file, cb) {
-        // Create unique filename: userId-timestamp-originalName
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        // Fallback if req.user is undefined (should be protected usually)
-        const prefix = req.user ? req.user._id : 'guest';
-        cb(null, prefix + '-' + uniqueSuffix + path.extname(file.originalname));
-    }
 });
 
 const fileFilter = (req, file, cb) => {
-    // Accept Images
     if (file.mimetype.startsWith('image/')) {
         cb(null, true);
     } else {

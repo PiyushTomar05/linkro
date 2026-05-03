@@ -17,8 +17,6 @@ app.use(cors()); // Allow all origins for dev
 app.use(compression());
 app.use(helmet());
 app.use(express.json());
-app.use('/uploads/resumes', express.static('uploads/resumes'));
-app.use('/uploads/profiles', express.static('uploads/profiles'));
 
 // Request logging middleware
 app.use((req, res, next) => {

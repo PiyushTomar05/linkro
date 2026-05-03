@@ -144,12 +144,13 @@ exports.uploadResume = async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        user.resume = req.file.filename;
+        // req.file.path is the full Cloudinary HTTPS URL
+        user.resume = req.file.path;
         await user.save();
 
         res.json({
             message: 'Resume uploaded successfully',
-            filename: req.file.filename
+            filename: req.file.path
         });
     } catch (error) {
         res.status(500).json({ message: error.message });

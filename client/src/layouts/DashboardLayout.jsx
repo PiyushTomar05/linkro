@@ -120,7 +120,7 @@ export default function DashboardLayout({ children }) {
               <div className="bg-slate-50/80 p-3 rounded-2xl border border-slate-100 mb-3 flex items-center gap-3 hover:bg-white hover:shadow-md transition-all cursor-pointer group">
                 <div className="w-10 h-10 rounded-full bg-white border-2 border-white shadow-sm flex items-center justify-center text-indigo-600 font-bold text-sm ring-2 ring-indigo-50 group-hover:ring-indigo-100 transition-all overflow-hidden">
                   {user?.profilePicture ? (
-                    <img src={`${(import.meta.env.VITE_API_URL || '/api').replace('/api', '')}/${user.profilePicture}`} alt="Avatar" className="w-full h-full object-cover" />
+                    <img src={user.profilePicture} alt="Avatar" className="w-full h-full object-cover" />
                   ) : (
                     user?.name?.charAt(0) || "U"
                   )}

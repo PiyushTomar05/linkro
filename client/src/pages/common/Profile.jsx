@@ -76,7 +76,7 @@ export default function Profile() {
                     <div className="relative group">
                         <div className="w-24 h-24 rounded-full bg-indigo-100 flex items-center justify-center text-3xl font-bold text-indigo-600 overflow-hidden border-4 border-white shadow-lg">
                             {user?.profilePicture ? (
-                                <img src={`${(import.meta.env.VITE_API_URL || '/api').replace('/api', '')}/${user.profilePicture}`} alt="Profile" className="w-full h-full object-cover" />
+                                <img src={user.profilePicture} alt="Profile" className="w-full h-full object-cover" />
                             ) : (
                                 user?.name?.charAt(0)
                             )}
