@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import client from '../api/client';
 import { ArrowRightIcon, BriefcaseIcon, UserGroupIcon, StarIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 import PublicNavbar from '../components/PublicNavbar';
 import Footer from '../components/Footer';
@@ -16,7 +16,7 @@ export default function LandingPage() {
     useEffect(() => {
         const fetchStats = async () => {
             try {
-                const res = await axios.get('http://localhost:5000/api/stats');
+                const res = await client.get('/stats');
                 setStats(res.data);
             } catch (err) {
                 console.error('Failed to fetch stats', err);

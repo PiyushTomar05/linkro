@@ -78,7 +78,34 @@ export default function Login() {
               Sign In
             </Button>
 
-            <div className="text-center text-sm">
+            <div className="mt-4 pt-4 border-t border-slate-200">
+              <p className="text-xs text-center text-slate-500 mb-3 uppercase tracking-wider font-semibold">Sample Logins</p>
+              <div className="grid grid-cols-3 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setFormData({ email: "admin@linkro.com", password: "password" })}
+                  className="px-2 py-1.5 text-xs font-medium text-indigo-700 bg-indigo-50 rounded hover:bg-indigo-100 transition-colors"
+                >
+                  Admin
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFormData({ email: "recruiter@linkro.com", password: "password" })}
+                  className="px-2 py-1.5 text-xs font-medium text-emerald-700 bg-emerald-50 rounded hover:bg-emerald-100 transition-colors"
+                >
+                  Recruiter
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFormData({ email: "agent@linkro.com", password: "password" })}
+                  className="px-2 py-1.5 text-xs font-medium text-amber-700 bg-amber-50 rounded hover:bg-amber-100 transition-colors"
+                >
+                  Agent
+                </button>
+              </div>
+            </div>
+
+            <div className="text-center text-sm pt-2">
               <span className="text-slate-500">Don't have an account? </span>
               <Link to="/register" className="font-semibold text-indigo-600 hover:text-indigo-500">Sign up</Link>
             </div>
